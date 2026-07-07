@@ -1,19 +1,23 @@
 from fastapi import FastAPI
 
+from app.core.config import settings
+
 app = FastAPI(
-    title="ResumeIQ API",
+    title=settings.project_name,
     description="AI Resume Analyzer Backend",
-    version="1.0.0"
+    version=settings.api_version,
 )
 
+
 @app.get("/")
-def root():
+def root() -> dict[str, str]:
     return {
         "message": "Welcome to ResumeIQ API!"
     }
 
+
 @app.get("/health")
-def health():
+def health() -> dict[str, str]:
     return {
         "status": "Running"
     }
