@@ -22,6 +22,13 @@ class Settings(BaseSettings):
     db_port: int = Field(3306, alias="DB_PORT")
     db_name: str = Field(..., alias="DB_NAME")
 
+    jwt_secret_key: str = Field(..., alias="JWT_SECRET_KEY")
+    jwt_algorithm: str = Field("HS256", alias="JWT_ALGORITHM")
+    jwt_access_token_expire_minutes: int = Field(
+        30,
+        alias="JWT_ACCESS_TOKEN_EXPIRE_MINUTES",
+    )
+
     model_config = SettingsConfigDict(
         env_file=BASE_DIR / ".env",
         env_file_encoding="utf-8",
