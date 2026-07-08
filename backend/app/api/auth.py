@@ -21,14 +21,16 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 def register_user(
     payload: UserCreate,
     db: Session = Depends(get_db),
-) -> User:
+) -> UserRead:
     try:
-        return AuthService.register_user(db=db, payload=payload)
+        user = AuthService.register_user(db=db, payload=payload)
     except EmailAlreadyRegistered as exc:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail=str(exc),
         ) from exc
+
+    return UserRead.model_validate(user)
 
 
 @router.post("/login", response_model=Token)
@@ -51,5 +53,5 @@ def login_user(
 @router.get("/me", response_model=UserRead)
 def read_current_user(
     current_user: User = Depends(get_current_user),
-) -> User:
-    return current_user
+) -> UserRead:
+    return UserRead.model_validate(current_user)

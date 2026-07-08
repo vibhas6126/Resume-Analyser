@@ -28,6 +28,8 @@ class Settings(BaseSettings):
         30,
         alias="JWT_ACCESS_TOKEN_EXPIRE_MINUTES",
     )
+    upload_dir: Path = Field(BASE_DIR / "uploads", alias="UPLOAD_DIR")
+    max_upload_size_mb: int = Field(5, alias="MAX_UPLOAD_SIZE_MB")
 
     model_config = SettingsConfigDict(
         env_file=BASE_DIR / ".env",
@@ -45,6 +47,12 @@ class Settings(BaseSettings):
             f"mysql+pymysql://{self.db_user}:{password}"
             f"@{self.db_host}:{self.db_port}/{self.db_name}"
         )
+
+    @computed_field
+    @property
+    def max_upload_size_bytes(self) -> int:
+        """Return the maximum allowed upload size in bytes."""
+        return self.max_upload_size_mb * 1024 * 1024
 
 
 @lru_cache
